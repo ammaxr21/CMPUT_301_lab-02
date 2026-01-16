@@ -1,8 +1,10 @@
 package com.example.listycity;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, selectedCity + " selected. Press delete to remove.", Toast.LENGTH_SHORT).show();
         });
 
+        addButton.setOnClickListener(v-> AddCityPrompt());
+
         deleteButton.setOnClickListener( v -> {
             if (selectedIndex > -1 && selectedCity != null) {
                 dataList.remove(selectedIndex);
@@ -61,7 +65,28 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Please select a city first", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void AddCityPrompt() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Please Enter City");
+        builder.setMessage("Enter City");
 
+        EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            String inputCity = input.getText().toString().trim();
+            if (!inputCity.isEmpty()) {
+                dataList.add(inputCity);
+                cityAdapter.notifyDataSetChanged();
+                Toast.makeText(MainActivity.this, inputCity+" has been added to the list.", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(MainActivity.this, "City name cannot be empty", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
     }
 }
